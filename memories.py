@@ -15,7 +15,7 @@ from pygame.locals import *
 GPIO.setmode(GPIO.BCM)
 #set up a button connected between P4 and GND
 #was used for testing but might come in handy for something
-GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+# GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 media_dir = "/home/pi/videos/"
 
@@ -26,9 +26,6 @@ card_id = "ABCDEF0123"
 
 #will be set to true when video is playing
 playing = False
-
-#equivalent of 'playing' but True when card present and no media found
-no_media = False
 
 #load configuration options for the video player from config.ini
 config = ConfigParser.SafeConfigParser()
