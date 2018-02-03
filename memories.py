@@ -12,12 +12,6 @@ from pygame.locals import *
 
 from utils import uid_to_hex_string
 
-# set up GPIO
-GPIO.setmode(GPIO.BCM)
-# set up a button connected between P4 and GND
-# was used for testing but might come in handy for something
-# GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
 CONFIG = 'config.ini'
 # media dir is a constant, as convention we use caps
 MEDIA_DIR = '/media/pi/PI/'
@@ -105,6 +99,11 @@ class Screen():
         return
 
     def setup_player(self):
+        # set up GPIO
+        GPIO.setmode(GPIO.BCM)
+        # set up a button connected between P4 and GND
+        # was used for testing but might come in handy for something
+        # GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         config = self.configure()
         # create an instance of the video player class
         self.player = omxplayer.create_player(config)
