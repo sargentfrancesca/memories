@@ -319,10 +319,10 @@ class MFRC522:
     (status, backData, backLen) = self.MFRC522_ToCard(self.PCD_AUTHENT,buff)
 
     # Check if an error occurred
-    if not(status == self.MI_OK):
-      print("AUTH ERROR!!")
-    if not (self.Read_MFRC522(self.Status2Reg) & 0x08) != 0:
-      print("AUTH ERROR(status2reg & 0x08) != 0")
+    # if not(status == self.MI_OK):
+    #   print("AUTH ERROR!!")
+    # if not (self.Read_MFRC522(self.Status2Reg) & 0x08) != 0:
+    #   print("AUTH ERROR(status2reg & 0x08) != 0")
 
     # Return the status
     return status
