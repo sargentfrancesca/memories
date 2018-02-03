@@ -17,7 +17,7 @@ GPIO.setmode(GPIO.BCM)
 #was used for testing but might come in handy for something
 # GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-media_dir = "/home/pi/videos/"
+media_dir = "/media/pi/PI/"
 
 #global vars for card status, manipulated by card_check_thread
 card_present = False
@@ -26,6 +26,9 @@ card_id = "ABCDEF0123"
 
 #will be set to true when video is playing
 playing = False
+
+#set to true upon finding media_dir
+usb_present = False
 
 #load configuration options for the video player from config.ini
 config = ConfigParser.SafeConfigParser()
@@ -114,6 +117,15 @@ def error_no_content():
     screen.blit(text_b, (size[0] // 2 - text_b.get_width() // 2, size[1] // 2 + 150 - text_b.get_height() // 2))
     pygame.display.flip()
 
+#error screen - media folder not found (no USB inserted)
+def error_no_usb():
+    blank_screen()
+    text_a = big_font.render("No Media Drive Found", True, (255,255,255))
+    text_b = small_font.render("Insert a USB drive with the volume label 'PI' and restart.", True, (255,255,255))
+    screen.blit(text_a, (size[0] // 2 - text_a.get_width() // 2, size[1] // 2 - text_a.get_height() // 2))
+    screen.blit(text_b, (size[0] // 2 - text_b.get_width() // 2, size[1] // 2 + 150 - text_b.get_height() // 2))
+    pygame.display.flip()
+
 #finds media associated with a card id
 #returns full file path if media is found, or False if not
 def validate_card(id):
@@ -121,6 +133,13 @@ def validate_card(id):
     print(file)
     if os.path.isfile(file):
         return file
+    else:
+        return False
+
+#checks for presence of video folder (i.e. usb drive is mounted)
+def check_for_usb():
+    if os.path.isdir(media_dir):
+        return True
     else:
         return False
 
@@ -145,9 +164,15 @@ big_font   = pygame.font.Font(None, 200)
 #display the welcome screen
 welcome_screen()
 
+#check for usb drive
+if not usb_present and check_for_usb():
+    usb_present = True
+else:
+    error_no_usb()
+
 while 1:
     # check if card present/not present
-    if card_present and not playing:
+    if usb_present and card_present and not playing:
         playing = True
         #validate the card and get the media filename
         media_file = validate_card(card_id)
@@ -159,6 +184,7 @@ while 1:
         else:
             #no corresponding media file found, show error message
             error_no_content()
+    #if the card is present and we're still playing, stop playing
     if not card_present and playing:
         playing = False
         print("Stopped playing")
